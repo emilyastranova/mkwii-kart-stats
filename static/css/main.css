@@ -1,5 +1,11 @@
 @font-face { font-family: Mario; src: url('./prstartk.ttf'); }
 
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+}
+
 body {
     font-family: 'Helvetica';
     font-weight: bold;
@@ -11,7 +17,7 @@ body {
     font-size: 150%;
 }
 
-tr td {
+#tab-compare tr td {
   width:25%;
 }
 
@@ -20,17 +26,74 @@ tr td {
     transition: width 0.5s;
 }
 
+.bar-track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 21px;
+  background-color: #050505;
+  border: 3px solid #636363;
+  border-top-color: #777777;
+  border-bottom-color: #4a4a4a;
+  border-radius: 3px;
+  padding: 2px;
+  box-shadow: inset 0 0 0 1px #000000;
+}
+
+.bar-fill {
+  height: 100%;
+  display: inline-block;
+  background: linear-gradient(to bottom, #ffef3b 0%, #ccb600 45%, #6e6200 82%, #242000 100%);
+  border-radius: 1px 0 0 1px;
+}
+
+.bar-diff {
+  height: 100%;
+  display: inline-block;
+  border-radius: 0 1px 1px 0;
+}
+
+.bar-diff.diff-pos {
+  background: linear-gradient(to bottom, #66ff66 0%, #24c424 45%, #0e630e 82%, #042204 100%);
+}
+
+.bar-diff.diff-neg {
+  background: linear-gradient(to bottom, #ff6666 0%, #c42424 45%, #630e0e 82%, #220404 100%);
+}
+
+.stat-diff-num {
+  padding-left: 6px;
+  font-size: 0.72rem;
+  font-weight: bold;
+  font-style: normal;
+  line-height: 1;
+  white-space: nowrap;
+  -webkit-text-stroke-width: 0px;
+}
+
+.h2h-vs-delta-badge {
+  font-size: 1.05rem !important;
+  padding: 4px 12px !important;
+  border-width: 2px !important;
+  font-style: normal;
+  -webkit-text-stroke-width: 0px;
+  letter-spacing: 0.5px;
+}
+
 .stats{
   font-style: italic;
 }
 
 .selectable{
+  display: block;
   border-color: #FFFF0099;
   border-style: solid;
   border-width:0;
   border-top-width:2px;
   border-bottom-width:2px;
   background-color: black;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .selectable.selected{
@@ -38,11 +101,551 @@ tr td {
   border-width:0;
   border-top-width:2px;
   border-bottom-width:2px;
-  background-color: #DDDD0099;
+  background-color: #FFFF0066;
 }
 
 .selectable img{
   width:50%;
   display:block;
   margin:auto;
+  transition: transform 0.15s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .selectable:hover {
+    border-color: #FFFF00;
+    background-color: #FFFF0038;
+    box-shadow: inset 0 0 8px #FFFF0055;
+  }
+
+  .selectable.selected:hover {
+    border-color: #FFFF00;
+    background-color: #FFFF0080;
+    box-shadow: inset 0 0 10px #FFFF0088;
+  }
+
+  .selectable:hover img {
+    transform: scale(1.07);
+  }
+}
+
+/* Navigation & Delta Rankings Tab Styles */
+.nav-tabs-bar {
+  background-color: #222222dd;
+  border-top: 2px solid #FFFF0099;
+  border-bottom: 2px solid #FFFF0099;
+  -webkit-text-stroke-width: 0px;
+}
+
+.app-title {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+  letter-spacing: 0.5px;
+}
+
+.mk-tab-btn {
+  background-color: #111;
+  color: #ccc;
+  -webkit-text-fill-color: #ccc;
+  border: 2px solid #FFFF0066;
+  padding: 6px 16px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mk-tab-btn:hover {
+  border-color: #FFFF00;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  background-color: #33330088;
+}
+
+.mk-tab-btn.active {
+  background-color: #FFFF0044;
+  border-color: #FFFF00;
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+}
+
+.mk-mini-btn {
+  background-color: #1b1b1b;
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+  -webkit-text-stroke-width: 0px;
+  border: 1px solid #FFFF0088;
+  padding: 2px 8px;
+  font-size: 0.55rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.mk-mini-btn:hover {
+  background-color: #FFFF0044;
+  border-color: #FFFF00;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+.small-text {
+  font-size: 0.65rem;
+  -webkit-text-stroke-width: 0px;
+  color: #ccc;
+  -webkit-text-fill-color: #ccc;
+}
+
+.text-warning.small-text {
+  color: #FFFF66 !important;
+  -webkit-text-fill-color: #FFFF66 !important;
+}
+
+#tab-deltas {
+  -webkit-text-stroke-width: 0px;
+  font-size: 0.68rem;
+}
+
+.deltas-panel {
+  background-color: #222222dd;
+  border-top: 2px solid #FFFF0066;
+  border-bottom: 2px solid #FFFF0066;
+}
+
+.filter-label {
+  display: block;
+  font-size: 0.6rem;
+  color: #FFFF66;
+  -webkit-text-fill-color: #FFFF66;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.mk-select {
+  background-color: #111;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  border: 1px solid #FFFF0088;
+  padding: 5px 8px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.mk-select:focus {
+  outline: none;
+  border-color: #FFFF00;
+}
+
+.stat-check-label {
+  font-size: 0.62rem;
+  color: #eee;
+  -webkit-text-fill-color: #eee;
+  cursor: pointer;
+  margin-bottom: 0;
+  user-select: none;
+}
+
+.stat-check-label input {
+  vertical-align: middle;
+  margin-right: 3px;
+}
+
+.deltas-table-wrap {
+  max-height: 70vh;
+  overflow-y: auto;
+  border: 1px solid #444;
+}
+
+.deltas-table th {
+  position: sticky;
+  top: 0;
+  background-color: #181818;
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+  border-bottom: 2px solid #FFFF0088 !important;
+  font-size: 0.62rem;
+  vertical-align: middle !important;
+  z-index: 2;
+}
+
+.deltas-table td {
+  width: auto !important;
+  vertical-align: middle !important;
+  border-color: #333 !important;
+  padding: 6px 6px !important;
+}
+
+.deltas-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.deltas-table tbody tr:hover {
+  background-color: #33330066 !important;
+}
+
+.combo-cell {
+  display: flex;
+  align-items: center;
+}
+
+.combo-icons {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.combo-char-img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-right: 3px;
+}
+
+.combo-veh-img {
+  width: 42px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.combo-names {
+  line-height: 1.15;
+}
+
+.combo-char-title {
+  font-size: 0.65rem;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+.combo-veh-title {
+  font-size: 0.58rem;
+  color: #bbb;
+  -webkit-text-fill-color: #bbb;
+}
+
+.weight-badge {
+  display: inline-block;
+  font-size: 0.48rem;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.weight-Light {
+  background-color: #1a4d2e;
+  color: #7dffb3;
+  -webkit-text-fill-color: #7dffb3;
+}
+
+.weight-Medium {
+  background-color: #1f3c6d;
+  color: #82b7ff;
+  -webkit-text-fill-color: #82b7ff;
+}
+
+.weight-Heavy {
+  background-color: #5c1f1f;
+  color: #ff8a8a;
+  -webkit-text-fill-color: #ff8a8a;
+}
+
+.total-delta-badge {
+  display: inline-block;
+  min-width: 38px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: bold;
+}
+
+.delta-zero {
+  background-color: #FFFF0033;
+  border: 1px solid #FFFF00;
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+}
+
+.delta-very-low {
+  background-color: #174926;
+  border: 1px solid #3ddc6c;
+  color: #6bff95;
+  -webkit-text-fill-color: #6bff95;
+}
+
+.delta-low {
+  background-color: #2b3f1c;
+  border: 1px solid #8bc34a;
+  color: #b7f079;
+  -webkit-text-fill-color: #b7f079;
+}
+
+.delta-med {
+  background-color: #3a3214;
+  border: 1px solid #ffc107;
+  color: #ffd966;
+  -webkit-text-fill-color: #ffd966;
+}
+
+.stat-delta-val {
+  font-size: 0.66rem;
+  font-weight: bold;
+}
+
+.stat-delta-pos {
+  color: #55ff55;
+  -webkit-text-fill-color: #55ff55;
+}
+
+.stat-delta-neg {
+  color: #ff5555;
+  -webkit-text-fill-color: #ff5555;
+}
+
+.stat-delta-even {
+  color: #cccccc;
+  -webkit-text-fill-color: #cccccc;
+}
+
+.stat-raw-pair {
+  font-size: 0.54rem;
+  color: #aaaaaa;
+  -webkit-text-fill-color: #aaaaaa;
+}
+
+.stat-col-excluded {
+  opacity: 0.32;
+}
+
+.h2h-delta-box {
+  -webkit-text-stroke-width: 0px;
+}
+
+.h2h-delta-label {
+  font-size: 0.55rem;
+  color: #bbbbbb;
+  -webkit-text-fill-color: #bbbbbb;
+  text-transform: uppercase;
+  font-style: normal;
+  margin-bottom: 2px;
+}
+
+.h2h-delta-value {
+  font-size: 0.85rem;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  font-style: normal;
+}
+
+.site-footer {
+  font-size: 0.65rem;
+  color: #bbbbbb;
+  -webkit-text-fill-color: #bbbbbb;
+  -webkit-text-stroke-width: 0px;
+  border-top: 1px solid #333333;
+  margin-top: 10px;
+}
+
+.site-footer a {
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+  text-decoration: underline;
+}
+
+.site-footer a:hover {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+/* Mobile Picker Switcher & Mobile Delta Cards */
+.mobile-picker-switcher {
+  background-color: #222222ee;
+  border: 1px solid #FFFF0088;
+  border-radius: 4px;
+  -webkit-text-stroke-width: 0px;
+}
+
+.mobile-slot-btn {
+  background-color: #141414;
+  border: 2px solid #555;
+  border-radius: 4px;
+  padding: 6px 6px;
+  text-align: center;
+  cursor: pointer;
+  color: #ccc;
+  -webkit-text-fill-color: #ccc;
+  -webkit-text-stroke-width: 0px;
+}
+
+.mobile-slot-btn.active {
+  background-color: #FFFF0033;
+  border-color: #FFFF00;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+.mobile-slot-btn .slot-tag {
+  font-size: 0.52rem;
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+  letter-spacing: 0.5px;
+}
+
+.mobile-slot-btn .slot-summary {
+  font-size: 0.6rem;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-delta-card {
+  background-color: #1a1a1a;
+  border: 1px solid #444;
+  border-left: 3px solid #FFFF00aa;
+  border-radius: 4px;
+  cursor: pointer;
+  -webkit-text-stroke-width: 0px;
+}
+
+.mobile-delta-card:active {
+  background-color: #2b2b00;
+}
+
+.mobile-rank-num {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+}
+
+.mobile-sub-metric {
+  font-size: 0.55rem;
+  color: #aaa;
+  -webkit-text-fill-color: #aaa;
+}
+
+.mobile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  background-color: #111;
+  padding: 4px;
+  border-radius: 3px;
+}
+
+.mobile-stat-chip {
+  text-align: center;
+  background-color: #1e1e1e;
+  border-radius: 2px;
+  padding: 2px 1px;
+}
+
+.mobile-stat-name {
+  font-size: 0.46rem;
+  color: #aaa;
+  -webkit-text-fill-color: #aaa;
+  text-transform: uppercase;
+}
+
+@media (max-width: 767.98px) {
+  body {
+    font-size: 105%;
+    -webkit-text-stroke-width: 0.5px;
+  }
+
+  #tab-compare .row,
+  #tab-deltas .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #left-picker-col .col-12,
+  #right-picker-col .col-12 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .app-title {
+    font-size: 0.8rem;
+  }
+
+  .mk-tab-btn {
+    padding: 5px 10px;
+    font-size: 0.65rem;
+  }
+
+  .stats {
+    font-size: 0.85rem;
+  }
+
+  .stat-side-num {
+    font-size: 0.78rem;
+    -webkit-text-stroke-width: 0px;
+  }
+
+  .stat-diff-num {
+    font-size: 0.75rem;
+    -webkit-text-stroke-width: 0px;
+  }
+
+  .mobile-picker-switcher {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  #tab-compare table {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto 6px auto;
+    border-collapse: separate;
+    border-spacing: 4px 3px;
+  }
+
+  #tab-compare tr td {
+    width: 25%;
+    padding: 0 !important;
+    vertical-align: middle;
+  }
+
+  .selectable {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 4px 2px;
+  }
+
+  .selectable img {
+    width: 75%;
+    max-width: 54px;
+    height: 44px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .combo-char-img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .combo-veh-img {
+    width: 32px;
+    height: 22px;
+  }
+
+  .combo-char-title {
+    font-size: 0.58rem;
+  }
+
+  .combo-veh-title {
+    font-size: 0.52rem;
+  }
 }

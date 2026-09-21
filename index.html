@@ -13,11 +13,54 @@
   </head>
   <body class="text-bold">
 
-      <!-- Main Content -->
-      <div class="row p-5">
+      <!-- Navigation Tabs -->
+      <div class="container-fluid px-2 px-md-5 pt-2 pt-md-4">
+        <div class="nav-tabs-bar d-flex flex-wrap align-items-center justify-content-between p-2 mb-2">
+          <div class="d-flex flex-wrap align-items-center w-100 w-md-auto justify-content-between justify-content-md-start">
+            <span class="app-title mr-2 mr-md-4 mb-1 mb-sm-0">MKWii Stat Comparator</span>
+            <div class="d-flex tab-btn-group">
+              <button id="tab-btn-compare" class="mk-tab-btn active mr-1 mr-md-2" type="button" onclick="switchTab('compare')">
+                Head-to-Head Compare
+              </button>
+              <button id="tab-btn-deltas" class="mk-tab-btn" type="button" onclick="switchTab('deltas')">
+                Delta Rankings
+              </button>
+            </div>
+          </div>
+          <div id="delta-quick-hint" class="small-text text-right d-none d-lg-block">
+            Select characters &amp; vehicles or rank the closest stat combinations
+          </div>
+        </div>
+      </div>
 
-        <!-- Left Side -->
-        <div class="col-12 col-md-4">
+      <!-- Tab 1: Main Comparison Content -->
+      <div id="tab-compare" class="row px-2 px-md-5 pb-4 pb-md-5 pt-1 pt-md-2 mx-0">
+
+        <!-- Mobile-Only Active Build Picker Switcher (Hidden on Desktop >=768px) -->
+        <div class="col-12 d-md-none order-2 mb-2 px-1">
+          <div class="mobile-picker-switcher p-2">
+            <div class="text-center small-text mb-1" style="color:#FFFF66; -webkit-text-fill-color:#FFFF66;">
+              Tap a slot below to change its Character &amp; Vehicle:
+            </div>
+            <div class="row no-gutters">
+              <div class="col-6 pr-1">
+                <button type="button" id="mobile-pick-btn-a" class="mobile-slot-btn active w-100" onclick="setMobilePickerSide('a')">
+                  <div class="slot-tag">LEFT BUILD (A)</div>
+                  <div id="mobile-slot-summary-a" class="slot-summary">Baby Mario / Standard Kart S</div>
+                </button>
+              </div>
+              <div class="col-6 pl-1">
+                <button type="button" id="mobile-pick-btn-b" class="mobile-slot-btn w-100" onclick="setMobilePickerSide('b')">
+                  <div class="slot-tag">RIGHT BUILD (B)</div>
+                  <div id="mobile-slot-summary-b" class="slot-summary">Baby Mario / Standard Kart S</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Left Side (Order 3 on Mobile, Order 1 on Desktop) -->
+        <div id="left-picker-col" class="col-12 col-md-4 order-3 order-md-1 px-1 px-md-3">
 
           <!-- Characters -->
           <div class="row">
@@ -307,149 +350,207 @@
         </div>
 
 
-        <!-- Comparison in the centre -->
-        <div class="col-12 col-md-4 p-1 stats">
+        <!-- Comparison in the centre (Order 1 on Mobile, Order 2 on Desktop) -->
+        <div class="col-12 col-md-4 p-1 stats order-1 order-md-2">
 
 
-        <div class="row mb-2 p-1" style="background-color:#55555555;">
-          <div class="col-5 text-center">
+        <div class="row mb-2 p-1 mx-0" style="background-color:#55555555;">
+          <div class="col-5 text-center px-1">
             <span id="character-a-name">Baby Luigi</span>
-            </br>
-            <span id="vehicle-a-name">Rally Romper<span>
+            <br/>
+            <span id="vehicle-a-name">Rally Romper</span>
+            <div class="mt-1">
+              <button type="button" class="mk-mini-btn" onclick="findClosestTo('a')">Find Closest Builds</button>
+            </div>
           </div>
-          <div class="col-2 text-center">
-            vs
+          <div class="col-2 text-center d-flex flex-column align-items-center justify-content-center px-0">
+            <div>vs</div>
+            <div class="mt-1" title="Sum of absolute differences across all 7 stats">
+              <span id="header-total-abs-delta" class="total-delta-badge h2h-vs-delta-badge delta-zero">|&Delta;| 0</span>
+            </div>
           </div>
-          <div class="col-5 text-center">
+          <div class="col-5 text-center px-1">
             <span id="character-b-name">Baby Luigi</span>
-            </br>
-            <span id="vehicle-b-name">Rally Romper<span>
+            <br/>
+            <span id="vehicle-b-name">Rally Romper</span>
+            <div class="mt-1">
+              <button type="button" class="mk-mini-btn" onclick="findClosestTo('b')">Find Closest Builds</button>
+            </div>
           </div>
         </div>
 
-        <div class="row mb-2 p-1" style="background-color:#55555555;">
+        <div class="row mb-2 p-1 mx-0" style="background-color:#55555555;">
           <div class="col-12 text-center">
             Speed
           </div>
           <div class="col-12">
-            <div class="row">
-              <div id="speed-num-a" class="col-1 p-2"></div>
-              <div class="col-10 d-flex p-2 bars">
-                <div id="speed" style="background-color:yellow;height:15px;display:inline-block;"></div>
-                <div id="speed-diff" style="height:15px;display:inline-block;"></div>
-                <div id="speed-num-diff" style="display:inline-block;" class="col-1 p-2"></div>
+            <div class="row align-items-center">
+              <div id="speed-num-a" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
+              <div class="col-8 col-md-10 d-flex align-items-center p-1 p-md-2 bars">
+                <div class="bar-track">
+                  <div id="speed" class="bar-fill"></div>
+                  <div id="speed-diff" class="bar-diff"></div>
+                  <div id="speed-num-diff" class="stat-diff-num"></div>
+                </div>
               </div>
-              <div id="speed-num-b" class="col-1 p-2"></div>
+              <div id="speed-num-b" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
             </div>
           </div>
         </div>
 
-          <div class="row mb-2 p-1" style="background-color:#55555555;">
+          <div class="row mb-2 p-1 mx-0" style="background-color:#55555555;">
             <div class="col-12 text-center">
               Weight
             </div>
             <div class="col-12">
-              <div class="row">
-                <div id="weight-num-a" class="col-1 p-2"></div>
-                <div class="col-10 d-flex p-2 bars">
-                  <div id="weight" style="background-color:yellow;height:15px;display:inline-block;"></div>
-                  <div id="weight-diff" style="height:15px;display:inline-block;"></div>
-                  <div id="weight-num-diff" style="display:inline-block;" class="col-1 p-2"></div>
+              <div class="row align-items-center">
+                <div id="weight-num-a" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
+                <div class="col-8 col-md-10 d-flex align-items-center p-1 p-md-2 bars">
+                  <div class="bar-track">
+                    <div id="weight" class="bar-fill"></div>
+                    <div id="weight-diff" class="bar-diff"></div>
+                    <div id="weight-num-diff" class="stat-diff-num"></div>
+                  </div>
                 </div>
-                <div id="weight-num-b" class="col-1 p-2"></div>
+                <div id="weight-num-b" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
               </div>
             </div>
           </div>
 
-          <div class="row mb-2 p-1" style="background-color:#55555555;">
+          <div class="row mb-2 p-1 mx-0" style="background-color:#55555555;">
             <div class="col-12 text-center">
               Acceleration
             </div>
             <div class="col-12">
-              <div class="row">
-                <div id="acceleration-num-a" class="col-1 p-2"></div>
-                <div class="col-10 d-flex p-2 bars">
-                  <div id="acceleration" style="background-color:yellow;height:15px;display:inline-block;"></div>
-                  <div id="acceleration-diff" style="height:15px;display:inline-block;"></div>
-                  <div id="acceleration-num-diff" style="display:inline-block;" class="col-1 p-2"></div>
+              <div class="row align-items-center">
+                <div id="acceleration-num-a" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
+                <div class="col-8 col-md-10 d-flex align-items-center p-1 p-md-2 bars">
+                  <div class="bar-track">
+                    <div id="acceleration" class="bar-fill"></div>
+                    <div id="acceleration-diff" class="bar-diff"></div>
+                    <div id="acceleration-num-diff" class="stat-diff-num"></div>
+                  </div>
                 </div>
-                <div id="acceleration-num-b" class="col-1 p-2"></div>
+                <div id="acceleration-num-b" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
               </div>
             </div>
           </div>
 
-          <div class="row mb-2 p-1" style="background-color:#55555555;">
+          <div class="row mb-2 p-1 mx-0" style="background-color:#55555555;">
             <div class="col-12 text-center">
               Handling
             </div>
             <div class="col-12">
-              <div class="row">
-                <div id="handling-num-a" class="col-1 p-2"></div>
-                <div class="col-10 d-flex p-2 bars">
-                  <div id="handling" style="background-color:yellow;height:15px;display:inline-block;"></div>
-                  <div id="handling-diff" style="height:15px;display:inline-block;"></div>
-                  <div id="handling-num-diff" style="display:inline-block;" class="col-1 p-2"></div>
+              <div class="row align-items-center">
+                <div id="handling-num-a" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
+                <div class="col-8 col-md-10 d-flex align-items-center p-1 p-md-2 bars">
+                  <div class="bar-track">
+                    <div id="handling" class="bar-fill"></div>
+                    <div id="handling-diff" class="bar-diff"></div>
+                    <div id="handling-num-diff" class="stat-diff-num"></div>
+                  </div>
                 </div>
-                <div id="handling-num-b" class="col-1 p-2"></div>
+                <div id="handling-num-b" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
               </div>
             </div>
           </div>
 
-          <div class="row mb-2 p-1" style="background-color:#55555555;">
+          <div class="row mb-2 p-1 mx-0" style="background-color:#55555555;">
             <div class="col-12 text-center">
               Drift
             </div>
             <div class="col-12">
-              <div class="row">
-                <div id="drift-num-a" class="col-1 p-2"></div>
-                <div class="col-10 d-flex p-2 bars">
-                  <div id="drift" style="background-color:yellow;height:15px;display:inline-block;"></div>
-                  <div id="drift-diff" style="height:15px;display:inline-block;"></div>
-                  <div id="drift-num-diff" style="display:inline-block;" class="col-1 p-2"></div>
+              <div class="row align-items-center">
+                <div id="drift-num-a" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
+                <div class="col-8 col-md-10 d-flex align-items-center p-1 p-md-2 bars">
+                  <div class="bar-track">
+                    <div id="drift" class="bar-fill"></div>
+                    <div id="drift-diff" class="bar-diff"></div>
+                    <div id="drift-num-diff" class="stat-diff-num"></div>
+                  </div>
                 </div>
-                <div id="drift-num-b" class="col-1 p-2"></div>
+                <div id="drift-num-b" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
               </div>
             </div>
           </div>
 
-          <div class="row mb-2 p-1" style="background-color:#55555555;">
+          <div class="row mb-2 p-1 mx-0" style="background-color:#55555555;">
             <div class="col-12 text-center">
               Offroad
             </div>
             <div class="col-12">
-              <div class="row">
-                <div id="offroad-num-a" class="col-1 p-2"></div>
-                <div class="col-10 d-flex p-2 bars">
-                  <div id="offroad" style="background-color:yellow;height:15px;display:inline-block;"></div>
-                  <div id="offroad-diff" style="height:15px;display:inline-block;"></div>
-                  <div id="offroad-num-diff" style="display:inline-block;" class="col-1 p-2"></div>
+              <div class="row align-items-center">
+                <div id="offroad-num-a" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
+                <div class="col-8 col-md-10 d-flex align-items-center p-1 p-md-2 bars">
+                  <div class="bar-track">
+                    <div id="offroad" class="bar-fill"></div>
+                    <div id="offroad-diff" class="bar-diff"></div>
+                    <div id="offroad-num-diff" class="stat-diff-num"></div>
+                  </div>
                 </div>
-                <div id="offroad-num-b" class="col-1 p-2"></div>
+                <div id="offroad-num-b" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
               </div>
             </div>
           </div>
 
-          <div class="row mb-2 p-1" style="background-color:#55555555;">
+          <div class="row mb-2 p-1 mx-0" style="background-color:#55555555;">
             <div class="col-12 text-center">
               Miniturbo
             </div>
             <div class="col-12">
-              <div class="row">
-                <div id="miniturbo-num-a" class="col-1 p-2"></div>
-                <div class="col-10 d-flex p-2 bars">
-                  <div id="miniturbo" style="background-color:yellow;height:15px;display:inline-block;"></div>
-                  <div id="miniturbo-diff" style="height:15px;display:inline-block;"></div>
-                  <div id="miniturbo-num-diff" style="display:inline-block;" class="col-1 p-2"></div>
+              <div class="row align-items-center">
+                <div id="miniturbo-num-a" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
+                <div class="col-8 col-md-10 d-flex align-items-center p-1 p-md-2 bars">
+                  <div class="bar-track">
+                    <div id="miniturbo" class="bar-fill"></div>
+                    <div id="miniturbo-diff" class="bar-diff"></div>
+                    <div id="miniturbo-num-diff" class="stat-diff-num"></div>
+                  </div>
                 </div>
-                <div id="miniturbo-num-b" class="col-1 p-2"></div>
+                <div id="miniturbo-num-b" class="col-2 col-md-1 p-1 p-md-2 text-center stat-side-num"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Overall Delta Summary Box -->
+          <div class="row mb-2 p-2 mx-0 h2h-delta-box" style="background-color:#333333aa; border: 1px solid #FFFF0066;">
+            <div class="col-12 text-center mb-1" style="color:#FFFF00; -webkit-text-fill-color:#FFFF00;">
+              Overall Stat Delta
+            </div>
+            <div class="col-12 px-0">
+              <div class="row align-items-center text-center no-gutters">
+                <div class="col-3">
+                  <div class="h2h-delta-label">Left Sum</div>
+                  <div id="total-sum-a" class="h2h-delta-value">0</div>
+                </div>
+                <div class="col-6">
+                  <div class="d-flex justify-content-around align-items-center">
+                    <div>
+                      <div class="h2h-delta-label" title="Sum of absolute stat differences">Total |&Delta;|</div>
+                      <span id="total-abs-delta" class="total-delta-badge delta-zero">0</span>
+                    </div>
+                    <div>
+                      <div class="h2h-delta-label" title="Net stat difference (Right minus Left)">Net &Delta;</div>
+                      <div id="total-net-delta" class="h2h-delta-value">0</div>
+                    </div>
+                    <div>
+                      <div class="h2h-delta-label" title="Euclidean distance across all 7 stats">Euclid &Delta;</div>
+                      <div id="total-euclid-delta" class="h2h-delta-value">0.0</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="h2h-delta-label">Right Sum</div>
+                  <div id="total-sum-b" class="h2h-delta-value">0</div>
+                </div>
               </div>
             </div>
           </div>
 
         </div>
 
-          <!-- Right Side -->
-          <div class="col-12 col-md-4">
+          <!-- Right Side (Order 4 on Mobile, Order 3 on Desktop) -->
+          <div id="right-picker-col" class="col-12 col-md-4 order-4 order-md-3 px-1 px-md-3 d-none d-md-block">
 
             <!-- Characters -->
             <div class="row">
@@ -740,6 +841,160 @@
         </div>
 
       </div>
+
+      <!-- Tab 2: Delta Rankings (Least Different Combinations) -->
+      <div id="tab-deltas" class="container-fluid px-2 px-md-5 pb-4 pb-md-5 pt-2 d-none">
+        <!-- Controls & Filters Panel -->
+        <div class="deltas-panel p-2 p-md-3 mb-2 mb-md-3">
+          <div class="row align-items-end">
+            <!-- Ranking Mode -->
+            <div class="col-12 col-sm-6 col-lg-3 mb-2">
+              <label class="filter-label">Ranking Mode</label>
+              <select id="delta-mode-select" class="mk-select w-100" onchange="onDeltaModeChange()">
+                <option value="all_pairs">All Combination Pairs (Global Closest)</option>
+                <option value="target">Closest to Target Combination</option>
+              </select>
+            </div>
+
+            <!-- Target Combination Selectors (shown when mode == target, or as filter in all_pairs) -->
+            <div id="target-character-col" class="col-6 col-lg-2 mb-2">
+              <label id="target-character-label" class="filter-label">Filter Character</label>
+              <select id="delta-char-select" class="mk-select w-100" onchange="onDeltaCharChange()">
+                <option value="all">All Characters</option>
+              </select>
+            </div>
+
+            <div id="target-vehicle-col" class="col-6 col-lg-2 mb-2">
+              <label id="target-vehicle-label" class="filter-label">Filter Vehicle</label>
+              <select id="delta-veh-select" class="mk-select w-100" onchange="renderDeltaRankings()">
+                <option value="all">All Vehicles</option>
+              </select>
+            </div>
+
+            <!-- Vehicle Type Filter -->
+            <div class="col-6 col-lg-2 mb-2">
+              <label class="filter-label">Vehicle Type</label>
+              <select id="delta-vehtype-select" class="mk-select w-100" onchange="onVehicleTypeChange()">
+                <option value="bikes" selected>Bikes Only</option>
+                <option value="all">All Vehicles (Bikes &amp; Karts)</option>
+                <option value="karts">Karts Only</option>
+              </select>
+            </div>
+
+            <!-- Pair Constraint Filter -->
+            <div class="col-6 col-lg-3 mb-2">
+              <label class="filter-label">Pair Constraint</label>
+              <select id="delta-constraint-select" class="mk-select w-100" onchange="renderDeltaRankings()">
+                <option value="any">Any Distinct Combination</option>
+                <option value="diff_vehicles">Different Vehicles / Bikes Only</option>
+                <option value="diff_chars">Different Characters Only</option>
+                <option value="diff_both">Different Character &amp; Different Vehicle</option>
+                <option value="diff_weight">Different Weight Classes Only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Mobile Toggle for Advanced Filters -->
+          <div class="d-flex d-md-none justify-content-between align-items-center pt-1 mt-1" style="border-top: 1px solid #444;">
+            <button type="button" id="mobile-filter-toggle-btn" class="mk-mini-btn py-1 px-2" onclick="toggleMobileAdvancedFilters()">
+              Stat Toggles &amp; Metric Options &#9662;
+            </button>
+            <button type="button" class="mk-mini-btn py-1 px-2" onclick="findClosestTo('a')">
+              Use Left Build
+            </button>
+          </div>
+
+          <div id="advanced-delta-filters" class="row align-items-center mt-2 pt-2 d-none d-md-flex" style="border-top: 1px solid #444;">
+            <!-- Distance Metric -->
+            <div class="col-12 col-md-4 col-lg-3 mb-2 mb-md-0">
+              <label class="filter-label">Rank By (Least Different First)</label>
+              <select id="delta-metric-select" class="mk-select w-100" onchange="renderDeltaRankings()">
+                <option value="total_abs">Total Absolute Delta (&Sigma;|&Delta;|) &uarr;</option>
+                <option value="euclidean">Euclidean Distance (&radic;&Sigma;&Delta;&sup2;) &uarr;</option>
+                <option value="max_abs">Max Single-Stat Delta (max|&Delta;|) &uarr;</option>
+              </select>
+            </div>
+
+            <!-- Included Stats -->
+            <div class="col-12 col-md-5 col-lg-6 mb-2 mb-md-0">
+              <div class="d-flex justify-content-between align-items-center">
+                <label class="filter-label mb-1">Stats Included in Delta Calculation</label>
+                <div>
+                  <button type="button" class="mk-mini-btn mr-1" onclick="setStatToggles('all')">All 7</button>
+                  <button type="button" class="mk-mini-btn" onclick="setStatToggles('core')">Core (Spd/Drf/MT)</button>
+                </div>
+              </div>
+              <div class="d-flex flex-wrap stat-checkbox-group">
+                <label class="stat-check-label mr-3"><input type="checkbox" class="stat-toggle" value="0" checked onchange="renderDeltaRankings()"> Speed</label>
+                <label class="stat-check-label mr-3"><input type="checkbox" class="stat-toggle" value="1" checked onchange="renderDeltaRankings()"> Weight</label>
+                <label class="stat-check-label mr-3"><input type="checkbox" class="stat-toggle" value="2" checked onchange="renderDeltaRankings()"> Accel</label>
+                <label class="stat-check-label mr-3"><input type="checkbox" class="stat-toggle" value="3" checked onchange="renderDeltaRankings()"> Handling</label>
+                <label class="stat-check-label mr-3"><input type="checkbox" class="stat-toggle" value="4" checked onchange="renderDeltaRankings()"> Drift</label>
+                <label class="stat-check-label mr-3"><input type="checkbox" class="stat-toggle" value="5" checked onchange="renderDeltaRankings()"> Offroad</label>
+                <label class="stat-check-label"><input type="checkbox" class="stat-toggle" value="6" checked onchange="renderDeltaRankings()"> Miniturbo</label>
+              </div>
+            </div>
+
+            <!-- Quick Sync & Limit -->
+            <div class="col-12 col-md-3 col-lg-3 d-flex align-items-end justify-content-between">
+              <div class="mr-2 flex-grow-1">
+                <label class="filter-label">Show Rows</label>
+                <select id="delta-limit-select" class="mk-select w-100" onchange="renderDeltaRankings()">
+                  <option value="50">Top 50</option>
+                  <option value="100" selected>Top 100</option>
+                  <option value="250">Top 250</option>
+                  <option value="500">Top 500</option>
+                </select>
+              </div>
+              <div class="d-none d-md-block">
+                <button type="button" class="mk-mini-btn py-2 px-2" title="Match against current Left selection from Compare tab" onclick="findClosestTo('a')">
+                  Use Left Build
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary & Status Bar -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 px-1">
+          <div id="delta-summary-text" class="small-text"></div>
+          <div class="small-text text-warning">Tap any row/card or "Compare" to inspect side-by-side</div>
+        </div>
+
+        <!-- Desktop Rankings Table (Hidden on Mobile <768px) -->
+        <div class="table-responsive deltas-table-wrap d-none d-md-block">
+          <table class="table table-dark table-hover table-sm deltas-table mb-0">
+            <thead>
+              <tr>
+                <th class="text-center" style="width: 60px;">Rank</th>
+                <th style="min-width: 210px;">Combination A</th>
+                <th style="min-width: 210px;">Combination B</th>
+                <th class="text-center" style="width: 95px;" title="Sum of absolute differences across selected stats">Total |&Delta;|</th>
+                <th class="text-center" style="width: 85px;" title="Maximum single-stat difference">Max |&Delta;|</th>
+                <th class="text-center" style="width: 85px;" title="Euclidean distance across selected stats">Euclid &Delta;</th>
+                <th class="text-center stat-col">Speed</th>
+                <th class="text-center stat-col">Weight</th>
+                <th class="text-center stat-col">Accel</th>
+                <th class="text-center stat-col">Handling</th>
+                <th class="text-center stat-col">Drift</th>
+                <th class="text-center stat-col">Offroad</th>
+                <th class="text-center stat-col">Miniturbo</th>
+                <th class="text-center" style="width: 90px;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="delta-rankings-tbody">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Rankings Card List (Shown on Mobile <768px) -->
+        <div id="delta-rankings-mobile-list" class="d-block d-md-none">
+        </div>
+      </div>
+
+      <footer class="site-footer text-center py-3 px-5">
+        Original work by <a href="https://github.com/nating" target="_blank" rel="noopener noreferrer">nating</a>. Modified with &lt;3 by <a href="https://github.com/emilyastranova" target="_blank" rel="noopener noreferrer">emilyastranova</a>
+      </footer>
 
     <script src="./static/js/script.js" type="text/javascript"></script>
   </body>
